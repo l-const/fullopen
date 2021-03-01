@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import React, {useEffect, useState } from 'react';
 import personService from "./services/persons"
 
@@ -56,6 +56,20 @@ const App  = () => {
     return persons.filter(p => p.name.toLowerCase().includes(sbstr.toLowerCase()))
   }
 
+  const dropUser = (ev) => {
+    //console.log(ev.target.name)
+    ev.target.style.backgroundColor = "#6960EC";
+    window.confirm(`Delete ${ev.target.name}`)
+    const dropId = persons.find(p => p.name === ev.target.name).id
+    personService
+      .drop(dropId)
+      .then(deluser => {
+        console.log(deluser)
+        setPersons(persons.filter(p => p.id !== dropId))
+      }) 
+
+  }
+
 
   return (
     <div>
@@ -67,7 +81,7 @@ const App  = () => {
         nu_value={newNumber}  nu_change={handleNumberChange}
        />
       <h3>Numbers</h3>
-      <Persons pers={filterNames(search)} />
+      <Persons pers={filterNames(search)} dropHandler={dropUser}/>
     </div>
   )
 } 
@@ -101,10 +115,10 @@ const PersonForm = ({submit, na_value, na_change, nu_value, nu_change}) => {
 }
 
 
-const Persons = ({pers}) => {
+const Persons = ({pers, dropHandler}) => {
   return (
     <div>
-      {pers.map(p => <p key={p.name}>{p.name + " " + p.number}</p>)}
+      {pers.map(p => <p key={p.name}>{p.name + " " + p.number}<button key={p.id} name={p.name} onClick={dropHandler}>delete</button></p>)}
     </div>
   )
 }

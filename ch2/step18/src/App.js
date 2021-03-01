@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import React, {useEffect, useState } from 'react';
 import personService from "./services/persons"
 
@@ -20,12 +20,12 @@ const App  = () => {
   }, [])
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewName(event.target.value)
   }
   
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewNumber(event.target.value)
   }
   
@@ -37,12 +37,28 @@ const App  = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    if(persons.map( p => p.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
-      return
+    // if(persons.map( p => p.name).includes(newName)) {
+    //   alert(`${newName} is already added to phonebook`)
+    //   return
+    // }
+    
+    const fperson = persons.find(p => p.name === newName && p.number !== newNumber)
+    if( fperson  !== undefined) {
+      const confirm = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      if(confirm){
+        personService
+          .update(fperson.id, {name:newName, number:newNumber})
+          .then(returnedPeson => {
+            console.log(returnedPeson)
+            setPersons(persons.map(per => per.name !== fperson.name ? per : returnedPeson))
+          
+          })
+          return
+      }
     }
-    console.log('button clicked', event.target)
+    
     // HTTP POST (create new person)
+
     const persObj = {name: newName, number: newNumber}
     personService
       .create(persObj)
@@ -56,6 +72,27 @@ const App  = () => {
     return persons.filter(p => p.name.toLowerCase().includes(sbstr.toLowerCase()))
   }
 
+  const dropUser = (ev) => {
+    ev.target.style.backgroundColor = "#6960EC";
+    const confirm = window.confirm(`Delete ${ev.target.name}`)
+
+    if (confirm){
+
+      const dropId = persons.find(p => p.name === ev.target.name).id
+      personService
+        .drop(dropId)
+        .then(deluser => {
+          //console.log(deluser)
+          setPersons(persons.filter(p => p.id !== dropId))
+        })
+        .catch(error => {
+          
+          alert(`${ev.target.name} is already deleted! Error`)
+        }) 
+    }
+
+  }
+
 
   return (
     <div>
@@ -67,7 +104,7 @@ const App  = () => {
         nu_value={newNumber}  nu_change={handleNumberChange}
        />
       <h3>Numbers</h3>
-      <Persons pers={filterNames(search)} />
+      <Persons pers={filterNames(search)} dropHandler={dropUser}/>
     </div>
   )
 } 
@@ -101,10 +138,10 @@ const PersonForm = ({submit, na_value, na_change, nu_value, nu_change}) => {
 }
 
 
-const Persons = ({pers}) => {
+const Persons = ({pers, dropHandler}) => {
   return (
     <div>
-      {pers.map(p => <p key={p.name}>{p.name + " " + p.number}</p>)}
+      {pers.map(p => <p key={p.name}>{p.name + " " + p.number}<button key={p.id} name={p.name} onClick={dropHandler}>delete</button></p>)}
     </div>
   )
 }
