@@ -63,6 +63,14 @@ const App  = () => {
             setPersons(persons.map(per => per.name !== fperson.name ? per : returnedPeson))
           
           })
+          .catch(error => {
+              console.log(error.response.data.error)
+              setNotifMessage(`${error.response.data.error}`)
+              setMtype("bad")
+              setTimeout(() => {
+                  setNotifMessage(null)
+              }, 2000)
+          })
           return
       }
     }
@@ -77,10 +85,18 @@ const App  = () => {
         setPersons([...persons, persObj])
         setNotifMessage(` ${persObj.name} created successfully`)
         setMtype("good")
-        setTimeout( () => {
+        setTimeout(() => {
           setNotifMessage(null)
         }, 2000)
-  })
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
+        setNotifMessage(`${error.response.data.error}`)
+        setMtype("bad")
+        setTimeout(() => {
+          setNotifMessage(null)
+        }, 2000)
+      })
   }
 
   const filterNames = (sbstr) => {
