@@ -50,7 +50,7 @@ const App = () => {
     const changedNote = {...note, important: !note.important}
 
     noteService
-    .update(url, changedNote)
+    .update(id, changedNote)
     .then( returndNote=> {
       setNotes(notes.map(note => note.id !== id ? note : returndNote))
     })
