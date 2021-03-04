@@ -1,0 +1,3 @@
+git checkout --ours .  # checkout our local version of all files
+git add -u             # mark all conflicted files as merged
+git commit             # commit the merge
