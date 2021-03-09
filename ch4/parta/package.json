@@ -1,0 +1,31 @@
+{
+  "name": "parta",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest --verbose",
+    "build:ui": "rm -rf build && cd ../../ch2/parte/notes && npm run build --prod  && cp -r build ../../../ch3/partc/",
+    "deploy": "git push heroku master",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "logs:prod": "heroku logs --tail"
+  },
+  "author": "\"l-const\"",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.18"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
+    "prettier": "2.2.1"
+  },
+  "jest" : {
+    "testEnvironment" : "node"
+  }
+}
