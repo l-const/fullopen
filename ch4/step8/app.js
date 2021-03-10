@@ -1,17 +1,18 @@
 const config = require('./utils/config')
 const express = require('express')
+require("express-async-errors")
 const app = express()
 const cors = require('cors')
-const notesRouter = require('./controllers/blogs')
+const blogRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
 
-logger.info("conntecting to", config.MONDODB_URI)
+logger.info("conntecting to", config.MONGODB_URI)
 
 
-mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true})
+mongoose.connect(config.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true})
         .then( () => {
             logger.info("connected to MongoDB")
         })
@@ -21,10 +22,10 @@ mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true, use
 
 
 app.use(cors())
-app.use(express.static())
+//app.use(express.static())
 app.use(middleware.requestLogger)
 
-app.use("/api/notes", blogRouter)
+app.use("/", blogRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
