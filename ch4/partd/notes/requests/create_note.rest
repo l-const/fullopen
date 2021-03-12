@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwNGI2YTE2ODQxOTVkYTY2MzEwNjliMSIsImlhdCI6MTYxNTU2OTgwMn0.fV1Evspvc38tcouLI7TIJHtQOHuEaW_q_I05c7dEM_s
+
+{
+    "content": "Check auhorization-token test",
+    "important": false,
+    "userId": "604b6a1684195da6631069b1"
+
+}
