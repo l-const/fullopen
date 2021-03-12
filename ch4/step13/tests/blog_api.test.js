@@ -48,10 +48,7 @@ describe("test id (4.9)", () => {
         .expect('Content-Type', /application\/json/)
     
         expect(response.body[0].id).toBeDefined()
-
     })
-
-
 })
 
 
@@ -109,6 +106,37 @@ describe("HTTP POST(4.10-4.11-4.12)", () => {
     })
 })
 
+describe("HTTP DELETE (4.13)", () => {
+    test("delete test", async () => {
+        const blogsAtEnd = await helper.blogsInDb()
+        const ids = blogsAtEnd.map(blog => blog.id)
+        console.log(ids)
+        await api
+            .delete(`/api/blogs/${ids[0]}`)
+            .expect(204)
+        const newblogsAtEnd = await helper.blogsInDb()
+        const newids = newblogsAtEnd.map(blog => blog.id)
+        expect(newids).not.toContain(ids[0])
+    })
+})
+
+
+describe("HTTP PUT (4.14)", () => {
+    test("put test", async () => {
+        const blogsAtEnd = await helper.blogsInDb()
+        const ids = blogsAtEnd.map(blog => blog.id)
+        const newBlog = {
+            ...blogsAtEnd[0],
+            likes: blogsAtEnd[0].likes + 20
+        }
+        const response = await api
+            .put(`/api/blogs/${ids[0]}`)
+            .send(newBlog)
+            .expect('Content-Type', /application\/json/)
+        const updatedBlog = response.body
+        expect(updatedBlog.likes).toEqual(newBlog.likes)
+    })
+})
 afterAll(()=> {
     mongoose.connection.close()
 })
