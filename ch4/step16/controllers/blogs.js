@@ -15,8 +15,7 @@ blogRouter.post("/", async (request, response) => {
     const user = await User.findById(body.userId)
 
     if (!body.url && !body.title) {
-        response.status(400).end()
-        return
+        return response.status(400).json({error: "missing url or title"})
     }
 
 
