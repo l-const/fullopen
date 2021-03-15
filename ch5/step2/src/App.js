@@ -15,10 +15,21 @@ const App = () => {
   const [messageType, setMessageType] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    if(user !== null) {
+      blogService.getAll().then(blogs =>
+        setBlogs(blogs)
+      )  
+    }
   }, [user])
+
+  useEffect(() => {
+    const loggedBlogappUser = window.localStorage.getItem("loggedBlogappUser")
+    if (loggedBlogappUser) {
+      const user = JSON.parse(loggedBlogappUser)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
 
 
 
@@ -26,6 +37,10 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({username, password})
+
+      window.localStorage.setItem(
+        "loggedBlogappUser", JSON.stringify(user)
+      )
       setNotifMessage("Login successful!")
       setMessageType("good")
       setTimeout(() => {setNotifMessage(null);setMessageType(null)}, 500)
@@ -40,6 +55,14 @@ const App = () => {
       setTimeout(() => {setNotifMessage(null);setMessageType(null)}, 1000)
     }
     console.log("form submitted")
+  }
+
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    setUser(null)
+    window.localStorage.removeItem("loggedBlogappUser")
+
   }
 
 
@@ -78,7 +101,7 @@ const App = () => {
         loginForm() :
       <div>
         <h2>blogs</h2>
-        <p>{user.name} is logged-in</p>
+        <p>{user.name} is logged-in <button type="submit" onClick={handleLogout}>logout</button></p>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />)
         }
